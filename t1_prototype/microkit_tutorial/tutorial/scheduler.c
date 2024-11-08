@@ -2,9 +2,9 @@
 #include <iso646.h>
 #include <stdint.h>
 #include <microkit.h>
-#include <timer.h>
 
-#define TIMER_CH_ID 2
+#define TIMER_CH_ID 1
+#define P1_SPD_CH_ID 2
 #define NUM_PARTITIONS 3
 
 /*
@@ -80,7 +80,8 @@ void init(void) {
     curr_init = 5 * (P1_LEN + P2_LEN + P3_LEN);
 
     /* Register timer interrupt for init */
-    meson_set_timeout(curr_init, false);
+    microkit_mr_set(0, curr_init);
+    microkit_ppcall(TIMER_CH_ID, microkit_msginfo_new(0, 1));
     
 }
 
@@ -93,13 +94,22 @@ void notified(microkit_channel ch)
         /* Initialisation not complete */
         if (p1_state->state != READY || p2_state->state != READY || p3_state-> state != READY) {
             microkit_dbg_puts("INITIALISATION NOT COMPLETE. WAITING FOR INITIALISATION... \n");
-            meson_set_timeout(curr_init - init_decrement, false);
+            if (curr_init - init_decrement > curr_init) {
+                microkit_dbg_puts("Ran out of init time?\n");
+            }
+            curr_init = curr_init - init_decrement;
+            microkit_mr_set(0, curr_init);
+            microkit_ppcall(TIMER_CH_ID, microkit_msginfo_new(0, 1));
         } else {
         /* Normal operation*/
             microkit_dbg_puts("INITIALISATION COMPLETE. STARTING NORMAL SCHEDULE OPERATION\n");
             int next_partition = get_next_partition_idx();
             /* TODO: Notify sPD notification */
-            meson_set_timeout(partition_info_list[next_partition]->LENGTH, false);
+            partition_state_list[next_partition]->state = RUNNING;
+            // meson_set_timeout(partition_info_list[next_partition]->LENGTH, false);
+            microkit_mr_set(0, partition_info_list[next_partition]->LENGTH);
+            microkit_notify(P1_SPD_CH_ID);
+            microkit_ppcall(TIMER_CH_ID, microkit_msginfo_new(0, 1));
         }
         
         /* Register next */

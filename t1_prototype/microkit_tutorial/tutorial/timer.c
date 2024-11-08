@@ -132,6 +132,14 @@ void init()
     // meson_set_timeout(1000, true);
 }
 
+microkit_msginfo protected(microkit_channel ch, microkit_msginfo msginfo) {
+    switch (ch) {
+        case SCHEDULER_CH_ID:
+            meson_set_timeout(microkit_mr_get(0), false);
+            return microkit_msginfo_new(0,0);
+    }
+}
+
 void notified(microkit_channel ch)
 {
     switch (ch) {
