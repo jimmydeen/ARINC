@@ -10,8 +10,8 @@ void p2_timeTriggered() {
   int privateval = read_p1();
   if (privateval % 2 == 0) {
     send_p3(privateval);
-    printf("Allowed even number : %d\n", privateval);
+    printf("P2: Allowed even number : %d\n", privateval);
   } else {
-    printf("Blocked odd number : %d\n", privateval);
+    printf("P2: Blocked odd number : %d\n", privateval);
   }
 }
