@@ -5,17 +5,15 @@ int broadcast_val = 1000;
 
 void p1_initialize(void) {
   // add initialization code here
-  printf("SENDING TO P2 FROM P1\n");
+  printf("Setting initial value: %d\n", value);
   send_p2(value);
-  printf("BROADCASTING FROM P1\n");
-  broadcast(broadcast_val);
-  printf("P1: INIT USER APPLICATION\n");
-  
+  printf("Setting initial broadcast: %d\n", broadcast_val);
+  broadcast(broadcast_val); 
 }
 
 void p1_timeTriggered() {
   // add compute phase code here
-  printf("P1: TIME TRIGGERED\n");
+  // printf("P1: TIME TRIGGERED\n");
   ++value;
   --broadcast_val;
   send_p2(value);

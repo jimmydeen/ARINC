@@ -22,7 +22,6 @@ void init(void) {
         /* Set port status */
         reset_port(SEND_P2_PORT);
         reset_port(SEND_ALL_PORT);
-        microkit_dbg_puts("FINISHED INITIALISING P1 SPD\n");
     }
 };
 
@@ -40,16 +39,12 @@ void notified(microkit_channel ch) {
         /* Invoke pPD (donate scheduling context)*/
         microkit_ppcall(PPD_CH_ID, microkit_msginfo_new(0,0));
 
-        printf("P1_SPD Returned from PP call\n");
-
         /* Checks if there is message from PPD port, if so copies to send port and sets flags */
         check_set_message(PPD_P2_PORT, SEND_P2_PORT);
         check_set_message(PPD_BROADCAST_PORT, SEND_ALL_PORT); 
-        printf("P1_SPD FINISHED CHECKING \n");
  
         /* If pPD returns, did not overrun */
         P_STATE->state = READY;
-        printf("P1 FINISHED\n");
     }
 };
 

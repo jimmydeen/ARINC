@@ -7,7 +7,7 @@ void p2_initialize(void) {
 
 void p2_timeTriggered() {
   // add compute phase code here
-  printf("P2: TIME TRIGGERED\n");
+  // printf("P2: TIME TRIGGERED\n");
   int privateval = read_p1();
   if (privateval % 2 == 0) {
     send_p3(privateval);

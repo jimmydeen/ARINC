@@ -9,19 +9,19 @@
 
        <Region name=PD-ELF timer-0 addr=0x6024c000 size=18984>
        <Region name=PD-ELF timer-1 addr=0x60251000 size=4272>
-       <Region name=PD-ELF scheduler-0 addr=0x60253000 size=21520>
+       <Region name=PD-ELF scheduler-0 addr=0x60253000 size=21272>
        <Region name=PD-ELF scheduler-1 addr=0x60259000 size=216>
-       <Region name=PD-ELF p1_ppd-0 addr=0x6025a000 size=20944>
+       <Region name=PD-ELF p1_ppd-0 addr=0x6025a000 size=20792>
        <Region name=PD-ELF p1_ppd-1 addr=0x60260000 size=136>
-       <Region name=PD-ELF p1_spd-0 addr=0x60261000 size=20768>
+       <Region name=PD-ELF p1_spd-0 addr=0x60261000 size=20608>
        <Region name=PD-ELF p1_spd-1 addr=0x60267000 size=152>
-       <Region name=PD-ELF p2_ppd-0 addr=0x60268000 size=20864>
+       <Region name=PD-ELF p2_ppd-0 addr=0x60268000 size=20792>
        <Region name=PD-ELF p2_ppd-1 addr=0x6026e000 size=136>
        <Region name=PD-ELF p2_spd-0 addr=0x6026f000 size=20624>
        <Region name=PD-ELF p2_spd-1 addr=0x60275000 size=168>
        <Region name=PD-ELF p3_spd-0 addr=0x60276000 size=20544>
        <Region name=PD-ELF p3_spd-1 addr=0x6027c000 size=152>
-       <Region name=PD-ELF p3_ppd-0 addr=0x6027d000 size=20848>
+       <Region name=PD-ELF p3_ppd-0 addr=0x6027d000 size=20776>
        <Region name=PD-ELF p3_ppd-1 addr=0x60283000 size=136>
 
 # Monitor (Initial Task) Info

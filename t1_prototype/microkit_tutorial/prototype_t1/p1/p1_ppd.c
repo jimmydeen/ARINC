@@ -12,7 +12,6 @@ void p1_timeTriggered(void);
 
 void send_p2(int message) {
     write_to_port(P2_PORT, message);
-    printf("FINISHED WRITE TO PORT\n");
 }
 
 void broadcast(int message) {
@@ -29,11 +28,10 @@ void init(void) {
 microkit_msginfo protected(microkit_channel channel, microkit_msginfo msginfo) {
     switch (channel) {
         case SPD_CH_ID:    
-            microkit_dbg_puts("P1 PPD: Received PPC from SPD!\n");
+            // microkit_dbg_puts("P1 PPD: Received PPC from SPD!\n");
             /* TODO: Run periodic application code */
             p1_timeTriggered();
 
-            microkit_dbg_puts("Returned from Periodic Process P1 PPD\n");
             break;
         
         default:
