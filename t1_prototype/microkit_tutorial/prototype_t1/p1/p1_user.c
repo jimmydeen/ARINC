@@ -13,7 +13,6 @@ void p1_initialize(void) {
 
 void p1_timeTriggered() {
   // add compute phase code here
-  // printf("P1: TIME TRIGGERED\n");
   ++value;
   --broadcast_val;
   send_p2(value);

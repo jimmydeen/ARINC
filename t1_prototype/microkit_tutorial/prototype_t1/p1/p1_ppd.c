@@ -28,8 +28,7 @@ void init(void) {
 microkit_msginfo protected(microkit_channel channel, microkit_msginfo msginfo) {
     switch (channel) {
         case SPD_CH_ID:    
-            // microkit_dbg_puts("P1 PPD: Received PPC from SPD!\n");
-            /* TODO: Run periodic application code */
+            /* Run periodic application code */
             p1_timeTriggered();
 
             break;

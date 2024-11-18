@@ -7,7 +7,6 @@ void p3_initialize(void) {
 
 void p3_timeTriggered() {
   // add compute phase code here
-  // printf("P3: TIME TRIGGERED\n");
   int private_val = read_p2();
   int broadcast_val = read_broadcast();
 
