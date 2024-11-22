@@ -21,7 +21,8 @@ void p3_timeTriggered() {
     printf("Broadcast value : %d == P2 val : %d\n", broadcast_val, private_val);
   } else if (private_val > curr_val) {
     curr_val = private_val;
-    printf("P3: Received Value From P2 : %d\n", private_val);
-    printf("P3: Received Broadcast from P1: %d\n", broadcast_val);
+    printf("P3: Received Value From P2 : %d\n\n", private_val);
+  } else {
+    printf("P3: Received Broadcast from P1: %d\n\n", broadcast_val);
   }
 }

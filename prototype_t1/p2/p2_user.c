@@ -12,6 +12,6 @@ void p2_timeTriggered() {
     send_p3(privateval);
     printf("P2: Sending even number : %d\n", privateval);
   } else {
-    printf("\nP2: Blocked odd number : %d\n\n", privateval);
+    printf("P2: Blocked odd number : %d\n", privateval);
   }
 }
