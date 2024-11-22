@@ -19,7 +19,10 @@ void init(void) {
     if (PPD_STATUS->status == READY) { 
         microkit_dbg_puts("P3 PPD READY, Initialising P3 SPD\n");
         P_STATE->state = READY;
-    }
+        /* Set port status */
+        reset_port(P2_RECV);
+        reset_port(P1_BROADCAST_RECV);
+    } 
 };
 
 void notified(microkit_channel ch) {
@@ -27,10 +30,8 @@ void notified(microkit_channel ch) {
     /* Start of partition time slice */
     case SCHEDULER_CH_ID:
 
-        /* If valid message will be changed */
-        reset_port(P2_RECV);
-        reset_port(P1_BROADCAST_RECV);
-
+        /* Input processing of partition */
+        /* Will overwrite existing message, otherwise existing message remains as per ARINC */
         check_set_message(P2_SEND_PORT, P2_RECV);
         check_set_message(P1_BROADCAST_PORT,P1_BROADCAST_RECV);
 

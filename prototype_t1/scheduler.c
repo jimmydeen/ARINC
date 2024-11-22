@@ -4,30 +4,14 @@
 #include <sddf/timer/client.h>
 #include <sddf/util/printf.h>
 
+/* Configuration */
 #define TIMER_CH_ID 1
+#define PARTITION_CHANNEL_START 2
 #define P1_SPD_CH_ID 2
 #define P2_SPD_CH_ID 3
 #define P3_SPD_CH_ID 4
 
 #define NUM_PARTITIONS 3
-
-/*
-    MR MAPPING
-
-    1_000_000 - p1_state
-    1_001_000 - p1_attr
-    1_002_000 - p2_state
-    1_003_000 - p2_attr
-    1_004_000 - p3_state
-    1_005_000 - p3_attr
-
-*/
-
-
-/* Init */
-
-
-
 
 /* Partition specific */
 #define P1_LEN 100 * NS_IN_MS
@@ -57,7 +41,7 @@ uint64_t curr_init = 0;
 /* Amount to decrement every time initialisation isn't complete */
 uint64_t init_decrement = 5;
 
-void init(void) {
+void setup_partition_config() {
     /* Assign partitions to list */
     partition_state_list[0] = p1_state;
     partition_state_list[1] = p2_state;
@@ -78,15 +62,21 @@ void init(void) {
     partition_info_list[0] = p1_attr;
     partition_info_list[1] = p2_attr;
     partition_info_list[2] = p3_attr;
+}
+
+void init(void) {
+    
+    setup_partition_config();
 
     /* Set init completion time */
-    /* Let's assume that the optimistic init time is the sum of all partitions */
-    curr_init = (P1_LEN + P2_LEN + P3_LEN);
+    /* Assume that the optimistic init time is the sum of all partitions timeslice */
+    for (int i = 0; i < NUM_PARTITIONS; ++i) {
+        curr_init += partition_info_list[i]->LENGTH;
+    }
 
     /* Register timer interrupt for init */
     
-    sddf_timer_set_timeout(TIMER_CH_ID, curr_init);
-    
+    sddf_timer_set_timeout(TIMER_CH_ID, curr_init); 
 }
 
 void notified(microkit_channel ch)
@@ -94,36 +84,32 @@ void notified(microkit_channel ch)
     switch (ch) {
     case TIMER_CH_ID:
 
-        /* Initialisation not complete */
-        if (p1_state->state != READY || p2_state->state != READY || p3_state-> state != READY) {
-            microkit_dbg_puts("INITIALISATION NOT COMPLETE. WAITING FOR INITIALISATION... \n");
-            if (curr_init - init_decrement > curr_init) {
-                microkit_dbg_puts("Ran out of init time?\n");
+        /* Check state of partitions */
+        for (int i = 0; i < NUM_PARTITIONS; ++i) {
+            /* If not all ready, wait for init */
+            if (partition_state_list[i]->state != READY) {
+                microkit_dbg_puts("INITIALISATION NOT COMPLETE. WAITING FOR INITIALISATION... \n");
+                 
+                if (curr_init - init_decrement > curr_init) {
+                    microkit_dbg_puts("Overflow init time?\n");
+                }
+                /* Decrease initialisation time by some fixed increment */
+                curr_init = curr_init - init_decrement;
+                sddf_timer_set_timeout(TIMER_CH_ID, curr_init);
+                return;
             }
-            curr_init = curr_init - init_decrement;
-            sddf_timer_set_timeout(TIMER_CH_ID, curr_init);
-        } else {
-        /* Normal operation*/
-            int next_partition = get_next_partition_idx();
-            /* TODO: Notify sPD notification */
-            partition_state_list[next_partition]->state = RUNNING;
-            switch (next_partition) {
-                case 0:
-                    microkit_notify(P1_SPD_CH_ID);
-                    break;
-                case 1:
-                    microkit_notify(P2_SPD_CH_ID);
-                    break;
-                case 2:
-                    microkit_notify(P3_SPD_CH_ID);
-                    break;
-            }
-            sddf_timer_set_timeout(TIMER_CH_ID, curr_init);
         }
-        
-        /* Register next */
+
+        /* Normal operation (init complete )*/
+        int next_partition = get_next_partition_idx();
+        partition_state_list[next_partition]->state = RUNNING; 
+        /* Notify partition channels */
+        microkit_notify(next_partition + PARTITION_CHANNEL_START);
+        sddf_timer_set_timeout(TIMER_CH_ID, partition_info_list[next_partition]->LENGTH);
         break;
+
     default:
         microkit_dbg_puts("TIMER|ERROR: unexpected channel!\n");
     }
+
 }

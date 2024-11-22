@@ -28,7 +28,6 @@ void init(void) {
     microkit_dbg_puts("Initialising P2 PPD\n");
     p2_initialize();
     STATUS->status = READY;
-    reset_port(P3_PORT);
 }
 
 microkit_msginfo protected(microkit_channel channel, microkit_msginfo msginfo) {
