@@ -17,10 +17,10 @@ void send_p3(int message) {
     write_to_port(P3_PORT, message);
 }
 
-int read_p1() {
+int read_p1(void) {
     return read_from_port(P1_RECV);
 }
-int read_broadcast() {
+int read_broadcast(void) {
     return read_from_port(P1_BROADCAST_RECV);
 }
 

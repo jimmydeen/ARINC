@@ -11,7 +11,7 @@ void p1_initialize(void) {
   broadcast(broadcast_val); 
 }
 
-void p1_timeTriggered() {
+void p1_timeTriggered(void) {
   // add compute phase code here
   ++value;
   --broadcast_val;

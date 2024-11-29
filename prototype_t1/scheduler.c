@@ -32,7 +32,9 @@ volatile PARTITION_SHARED_t *partition_state_list[NUM_PARTITIONS] = {0};
 PARTITION_ATTR_t *partition_info_list[NUM_PARTITIONS] = {0};
 uint64_t plist_head = 0;
 
-uint64_t get_next_partition_idx() {
+int init_finished = 0;
+
+uint64_t get_next_partition_idx(void) {
     return plist_head++ % NUM_PARTITIONS;
 }
 
@@ -41,7 +43,7 @@ uint64_t curr_init = 0;
 /* Amount to decrement every time initialisation isn't complete */
 uint64_t init_decrement = 5;
 
-void setup_partition_config() {
+void setup_partition_config(void) {
     /* Assign partitions to list */
     partition_state_list[0] = p1_state;
     partition_state_list[1] = p2_state;
@@ -84,20 +86,24 @@ void notified(microkit_channel ch)
     switch (ch) {
     case TIMER_CH_ID:
 
-        /* Check state of partitions */
-        for (int i = 0; i < NUM_PARTITIONS; ++i) {
-            /* If not all ready, wait for init */
-            if (partition_state_list[i]->state != READY) {
-                microkit_dbg_puts("INITIALISATION NOT COMPLETE. WAITING FOR INITIALISATION... \n");
-                 
-                if (curr_init - init_decrement > curr_init) {
-                    microkit_dbg_puts("Overflow init time?\n");
+        if (!init_finished) {
+            /* Check state of partitions */
+            for (int i = 0; i < NUM_PARTITIONS; ++i) {
+                /* If not all ready, wait for init */
+                if (partition_state_list[i]->state != READY) {
+                    microkit_dbg_puts("INITIALISATION NOT COMPLETE. WAITING FOR INITIALISATION... \n");
+                    
+                    if (curr_init - init_decrement > curr_init) {
+                        microkit_dbg_puts("Overflow init time?\n");
+                    }
+                    /* Decrease initialisation time by some fixed increment */
+                    curr_init = curr_init - init_decrement;
+                    sddf_timer_set_timeout(TIMER_CH_ID, curr_init);
+                    return;
                 }
-                /* Decrease initialisation time by some fixed increment */
-                curr_init = curr_init - init_decrement;
-                sddf_timer_set_timeout(TIMER_CH_ID, curr_init);
-                return;
             }
+            /* Set flag once finished */
+            init_finished = 1;
         }
 
         /* Normal operation (init complete )*/

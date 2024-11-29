@@ -7,7 +7,7 @@ void p3_initialize(void) {
   printf("P3: INIT USER APPLICATION\n");
 }
 
-void p3_timeTriggered() {
+void p3_timeTriggered(void) {
   // add compute phase code here
   int private_val = read_p2();
   int broadcast_val = read_broadcast();

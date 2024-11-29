@@ -5,7 +5,7 @@ void p2_initialize(void) {
   printf("P2: INIT USER APPLICATION\n");
 }
 
-void p2_timeTriggered() {
+void p2_timeTriggered(void) {
   // add compute phase code here
   int privateval = read_p1();
   if (privateval % 2 == 0) {

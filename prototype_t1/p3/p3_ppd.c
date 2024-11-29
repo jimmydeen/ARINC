@@ -10,11 +10,11 @@ volatile SAMPLING_PORT_TYPE *P1_BROADCAST_RECV;
 void p3_initialize(void);
 void p3_timeTriggered(void);
 
-int read_p2() {
+int read_p2(void) {
     return read_from_port(P2_RECV);
 }
 
-int read_broadcast() {
+int read_broadcast(void) {
     return read_from_port(P1_BROADCAST_RECV);
 }
 
